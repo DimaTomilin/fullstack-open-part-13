@@ -35,12 +35,18 @@ router.put('/:id', async (req, res) => {
   res.json({ likes: updatedBlog[0][0][0].likes });
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', tokenExtractor, async (req, res) => {
   const { id } = req.params;
-  await Blog.destroy({
-    where: { id: id },
-  });
-  res.json(`Deleted blog with id: ${id}`);
+  const blog = await Blog.findByPk(id);
+
+  if (blog.userId === req.decodedToken.id) {
+    await Blog.destroy({
+      where: { id: id },
+    });
+    res.json(`Deleted blog with id: ${id}`);
+  } else {
+    res.json(`You don't have access to delete blog with id: ${id}`);
+  }
 });
 
 module.exports = router;
