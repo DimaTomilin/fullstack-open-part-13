@@ -1,18 +1,40 @@
 const router = require('express').Router();
 require('express-async-errors');
 const { tokenExtractor } = require('../middleware/login');
+const { Op } = require('sequelize');
 
 const { Blog } = require('../models');
 const { User } = require('../models');
 
 router.get('/', async (req, res) => {
-  const blogs = await Blog.findAll({
-    attributes: { exclude: ['userId'] },
-    include: {
-      model: User,
-      attributes: ['name'],
-    },
-  });
+  let blogs;
+  if (req.query.search) {
+    console.log('here');
+    blogs = await Blog.findAll({
+      attributes: { exclude: ['userId'] },
+      include: {
+        model: User,
+        attributes: ['name'],
+      },
+      where: {
+        [Op.or]: [
+          { title: { [Op.iLike]: '%' + req.query.search + '%' } },
+          { author: { [Op.iLike]: '%' + req.query.search + '%' } },
+        ],
+      },
+      order: ['likes', 'DESC'],
+    });
+  } else {
+    console.log('no here');
+    blogs = await Blog.findAll({
+      attributes: { exclude: ['userId'] },
+      include: {
+        model: User,
+        attributes: ['name'],
+      },
+      order: ['likes', 'DESC'],
+    });
+  }
   res.json(blogs);
 });
 
