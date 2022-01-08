@@ -1,4 +1,5 @@
 const router = require('express').Router();
+require('express-async-errors');
 
 const { User, Blog } = require('../models');
 

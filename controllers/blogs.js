@@ -9,7 +9,6 @@ const { User } = require('../models');
 router.get('/', async (req, res) => {
   let blogs;
   if (req.query.search) {
-    console.log('here');
     blogs = await Blog.findAll({
       attributes: { exclude: ['userId'] },
       include: {
@@ -22,17 +21,16 @@ router.get('/', async (req, res) => {
           { author: { [Op.iLike]: '%' + req.query.search + '%' } },
         ],
       },
-      order: ['likes', 'DESC'],
+      order: [['likes', 'DESC']],
     });
   } else {
-    console.log('no here');
     blogs = await Blog.findAll({
       attributes: { exclude: ['userId'] },
       include: {
         model: User,
         attributes: ['name'],
       },
-      order: ['likes', 'DESC'],
+      order: [['likes', 'DESC']],
     });
   }
   res.json(blogs);

@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+require('express-async-errors');
 const router = require('express').Router();
 
 const { SECRET } = require('../util/config');
