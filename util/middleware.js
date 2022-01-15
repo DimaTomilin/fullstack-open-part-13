@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { SECRET } = require('../util/config');
+const { SECRET } = require('./config.js');
 
 const tokenExtractor = (req, res, next) => {
   const authorization = req.get('authorization');
@@ -7,11 +7,12 @@ const tokenExtractor = (req, res, next) => {
     try {
       req.decodedToken = jwt.verify(authorization.substring(7), SECRET);
     } catch {
-      res.status(401).json({ error: 'token invalid' });
+      return res.status(401).json({ error: 'token invalid' });
     }
   } else {
-    res.status(401).json({ error: 'token missing' });
+    return res.status(401).json({ error: 'token missing' });
   }
   next();
 };
+
 module.exports = { tokenExtractor };

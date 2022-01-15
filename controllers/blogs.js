@@ -1,6 +1,6 @@
 const router = require('express').Router();
 require('express-async-errors');
-const { tokenExtractor } = require('../middleware/login');
+const { tokenExtractor } = require('../util/middleware');
 const { Op } = require('sequelize');
 
 const { Blog } = require('../models');
